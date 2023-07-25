@@ -1,0 +1,18 @@
+For the NLP Project, I have created a model called GenerateMCQ() which takes in a text (str) and gives an output string containing the Question, 4 Choices and a line giving the correct answers. 
+
+Text PreProcessing
+I generated the text using PyPDF library which enabled conversion between pdf files to raw text.
+This text had to be pre-processed. There were a lot of noise as in irregularly placed strings of text that was captured from the pdf. Also, I removed the ending part of the chapter which didn't have information but rather was a test yourself section. I manually selected a few strings which seemed to repeat itself over the course of the text (as in headers, footers or page titles) and replaced them. I did try my best at cleaning this text but a few irregularities do remain.
+This text was given to the GenerateMCQ() model.
+
+This text was sent through a Summarizer which was a BERT Model which used 'bert-large-uncased' which is a thorough transformer based model with around 512 tokens. This summarizes the original text and so is more rich and cleaner than the original text. This summarizer brought down my text length to about 30% of the original text length.
+
+Keyword Phrasing
+First I tokenized the text into sentences using the spacy library.I used pke (Python Keyword Extractor) library to generate the most likely keywords for question generation. This maps each word of the text according to importance and relavance both to the original text as well as the summarized text.
+I then mapped each keyword to sentences containing it. These sentences were extracted using KeywordProcessor which is a model part of the flashtext library.
+
+Distractors:
+I used ConceptNet which contains online language source material taking into account the meaning and sense of the word before giving synonyms that should confuse the users (when these distractors are used as options). This should result in increased complexity of the mcqs generated. The choices that are incorrect are the distractors of one of each of the two correct answers.
+
+Question Formation
+From the mapping of the keywords to the most likely sentences, I converted the sentences into questions by placing appropriate blanks which are to be filled by the options given. The sentences I chose for the questions are the ones filtered to contain 2 keywords and hence 2 correct answers to each question.
